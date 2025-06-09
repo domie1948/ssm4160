@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.WenshudanganDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.username as username
+        ,a.password as password
+        ,a.wenshudangan_name as wenshudanganName
+        ,a.wenshudangan_phone as wenshudanganPhone
+        ,a.wenshudangan_id_number as wenshudanganIdNumber
+        ,a.wenshudangan_photo as wenshudanganPhoto
+        ,a.sex_types as sexTypes
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.WenshudanganView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM wenshudangan  a
+
+        <where>
+            <if test=" params.username != '' and params.username != null and params.username != 'null' ">
+                and a.username like CONCAT('%',#{params.username},'%')
+            </if>
+            <if test=" params.password != '' and params.password != null and params.password != 'null' ">
+                and a.password like CONCAT('%',#{params.password},'%')
+            </if>
+            <if test=" params.wenshudanganName != '' and params.wenshudanganName != null and params.wenshudanganName != 'null' ">
+                and a.wenshudangan_name like CONCAT('%',#{params.wenshudanganName},'%')
+            </if>
+            <if test=" params.wenshudanganPhone != '' and params.wenshudanganPhone != null and params.wenshudanganPhone != 'null' ">
+                and a.wenshudangan_phone like CONCAT('%',#{params.wenshudanganPhone},'%')
+            </if>
+            <if test=" params.wenshudanganIdNumber != '' and params.wenshudanganIdNumber != null and params.wenshudanganIdNumber != 'null' ">
+                and a.wenshudangan_id_number like CONCAT('%',#{params.wenshudanganIdNumber},'%')
+            </if>
+            <if test="params.sexTypes != null">
+                and a.sex_types = #{params.sexTypes}
+            </if>
+
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+</mapper>

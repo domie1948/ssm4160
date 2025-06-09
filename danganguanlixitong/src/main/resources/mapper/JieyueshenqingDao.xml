@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.JieyueshenqingDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yonghu_id as yonghuId
+        ,a.dangan_id as danganId
+        ,a.insert_time as insertTime
+        ,a.yongtu as yongtu
+        ,a.bumen_types as bumenTypes
+        ,a.jieyue_time as jieyueTime
+        ,a.guihuan_time as guihuanTime
+        ,a.gongdiangongsi as gongdiangongsi
+        ,a.jieyuebu_id as jieyuebuId
+        ,a.jieyuebu_types as jieyuebuTypes
+        ,a.jieyuebu_content as jieyuebuContent
+        ,a.jieyuebu_time as jieyuebuTime
+        ,a.zhuguan_id as zhuguanId
+        ,a.zhuguan_types as zhuguanTypes
+        ,a.zhuguan_content as zhuguanContent
+        ,a.zhuguan_time as zhuguanTime
+        ,a.zhuren_id as zhurenId
+        ,a.zhuren_types as zhurenTypes
+        ,a.zhuren_content as zhurenContent
+        ,a.zhuren_time as zhurenTime
+        ,a.wenshudangan_id as wenshudanganId
+        ,a.wenshudangan_types as wenshudanganTypes
+        ,a.wenshudangan_content as wenshudanganContent
+        ,a.wenshudangan_time as wenshudanganTime
+        ,a.jingbanren as jingbanren
+        ,a.jingbanren_time as jingbanrenTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.JieyueshenqingView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,dangan.dangan_bianhao as danganBianhao
+        ,dangan.dangan_name as danganName
+        ,dangan.dangan_types as danganTypes
+        ,dangan.dangan_photo as danganPhoto
+        ,dangan.dangan_content as danganContent
+        ,dangan.insert_time as insertTime
+        ,jieyuebu.jieyuebu_name as jieyuebuName
+        ,jieyuebu.jieyuebu_phone as jieyuebuPhone
+        ,jieyuebu.jieyuebu_id_number as jieyuebuIdNumber
+        ,jieyuebu.jieyuebu_photo as jieyuebuPhoto
+        ,wenshudangan.wenshudangan_name as wenshudanganName
+        ,wenshudangan.wenshudangan_phone as wenshudanganPhone
+        ,wenshudangan.wenshudangan_id_number as wenshudanganIdNumber
+        ,wenshudangan.wenshudangan_photo as wenshudanganPhoto
+        ,yonghu.yonghu_name as yonghuName
+        ,yonghu.yonghu_phone as yonghuPhone
+        ,yonghu.yonghu_id_number as yonghuIdNumber
+        ,yonghu.yonghu_danwei as yonghuDanwei
+        ,yonghu.yonghu_photo as yonghuPhoto
+        ,zhuguan.zhuguan_name as zhuguanName
+        ,zhuguan.zhuguan_phone as zhuguanPhone
+        ,zhuguan.zhuguan_id_number as zhuguanIdNumber
+        ,zhuguan.zhuguan_photo as zhuguanPhoto
+        ,zhuren.zhuren_name as zhurenName
+        ,zhuren.zhuren_phone as zhurenPhone
+        ,zhuren.zhuren_id_number as zhurenIdNumber
+        ,zhuren.zhuren_photo as zhurenPhoto
+
+        FROM jieyueshenqing  a
+        left JOIN dangan dangan ON a.dangan_id = dangan.id
+        left JOIN jieyuebu jieyuebu ON a.jieyuebu_id = jieyuebu.id
+        left JOIN wenshudangan wenshudangan ON a.wenshudangan_id = wenshudangan.id
+        left JOIN yonghu yonghu ON a.yonghu_id = yonghu.id
+        left JOIN zhuguan zhuguan ON a.zhuguan_id = zhuguan.id
+        left JOIN zhuren zhuren ON a.zhuren_id = zhuren.id
+
+        <where>
+            <if test="params.yonghuId != null">
+                and a.yonghu_id = #{params.yonghuId}
+            </if>
+            <if test="params.danganId != null">
+                and a.dangan_id = #{params.danganId}
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+            <if test=" params.yongtu != '' and params.yongtu != null and params.yongtu != 'null' ">
+                and a.yongtu like CONCAT('%',#{params.yongtu},'%')
+            </if>
+            <if test="params.bumenTypes != null">
+                and a.bumen_types = #{params.bumenTypes}
+            </if>
+            <if test=" params.jieyueTimeStart != '' and params.jieyueTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.jieyue_time) >= UNIX_TIMESTAMP(#{params.jieyueTimeStart}) ]]>
+            </if>
+            <if test=" params.jieyueTimeEnd != '' and params.jieyueTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.jieyue_time) <= UNIX_TIMESTAMP(#{params.jieyueTimeEnd}) ]]>
+            </if>
+            <if test=" params.guihuanTimeStart != '' and params.guihuanTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.guihuan_time) >= UNIX_TIMESTAMP(#{params.guihuanTimeStart}) ]]>
+            </if>
+            <if test=" params.guihuanTimeEnd != '' and params.guihuanTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.guihuan_time) <= UNIX_TIMESTAMP(#{params.guihuanTimeEnd}) ]]>
+            </if>
+            <if test=" params.gongdiangongsi != '' and params.gongdiangongsi != null and params.gongdiangongsi != 'null' ">
+                and a.gongdiangongsi like CONCAT('%',#{params.gongdiangongsi},'%')
+            </if>
+            <if test="params.jieyuebuId != null">
+                and a.jieyuebu_id = #{params.jieyuebuId}
+            </if>
+            <if test="params.jieyuebuTypes != null">
+                and a.jieyuebu_types = #{params.jieyuebuTypes}
+            </if>
+            <if test=" params.jieyuebuContent != '' and params.jieyuebuContent != null and params.jieyuebuContent != 'null' ">
+                and a.jieyuebu_content like CONCAT('%',#{params.jieyuebuContent},'%')
+            </if>
+            <if test=" params.jieyuebuTimeStart != '' and params.jieyuebuTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.jieyuebu_time) >= UNIX_TIMESTAMP(#{params.jieyuebuTimeStart}) ]]>
+            </if>
+            <if test=" params.jieyuebuTimeEnd != '' and params.jieyuebuTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.jieyuebu_time) <= UNIX_TIMESTAMP(#{params.jieyuebuTimeEnd}) ]]>
+            </if>
+            <if test="params.zhuguanId != null">
+                and a.zhuguan_id = #{params.zhuguanId}
+            </if>
+            <if test="params.zhuguanTypes != null">
+                and a.zhuguan_types = #{params.zhuguanTypes}
+            </if>
+            <if test=" params.zhuguanContent != '' and params.zhuguanContent != null and params.zhuguanContent != 'null' ">
+                and a.zhuguan_content like CONCAT('%',#{params.zhuguanContent},'%')
+            </if>
+            <if test=" params.zhuguanTimeStart != '' and params.zhuguanTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.zhuguan_time) >= UNIX_TIMESTAMP(#{params.zhuguanTimeStart}) ]]>
+            </if>
+            <if test=" params.zhuguanTimeEnd != '' and params.zhuguanTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.zhuguan_time) <= UNIX_TIMESTAMP(#{params.zhuguanTimeEnd}) ]]>
+            </if>
+            <if test="params.zhurenId != null">
+                and a.zhuren_id = #{params.zhurenId}
+            </if>
+            <if test="params.zhurenTypes != null">
+                and a.zhuren_types = #{params.zhurenTypes}
+            </if>
+            <if test=" params.zhurenContent != '' and params.zhurenContent != null and params.zhurenContent != 'null' ">
+                and a.zhuren_content like CONCAT('%',#{params.zhurenContent},'%')
+            </if>
+            <if test=" params.zhurenTimeStart != '' and params.zhurenTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.zhuren_time) >= UNIX_TIMESTAMP(#{params.zhurenTimeStart}) ]]>
+            </if>
+            <if test=" params.zhurenTimeEnd != '' and params.zhurenTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.zhuren_time) <= UNIX_TIMESTAMP(#{params.zhurenTimeEnd}) ]]>
+            </if>
+            <if test="params.wenshudanganId != null">
+                and a.wenshudangan_id = #{params.wenshudanganId}
+            </if>
+            <if test="params.wenshudanganTypes != null">
+                and a.wenshudangan_types = #{params.wenshudanganTypes}
+            </if>
+            <if test=" params.wenshudanganContent != '' and params.wenshudanganContent != null and params.wenshudanganContent != 'null' ">
+                and a.wenshudangan_content like CONCAT('%',#{params.wenshudanganContent},'%')
+            </if>
+            <if test=" params.wenshudanganTimeStart != '' and params.wenshudanganTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.wenshudangan_time) >= UNIX_TIMESTAMP(#{params.wenshudanganTimeStart}) ]]>
+            </if>
+            <if test=" params.wenshudanganTimeEnd != '' and params.wenshudanganTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.wenshudangan_time) <= UNIX_TIMESTAMP(#{params.wenshudanganTimeEnd}) ]]>
+            </if>
+            <if test=" params.jingbanren != '' and params.jingbanren != null and params.jingbanren != 'null' ">
+                and a.jingbanren like CONCAT('%',#{params.jingbanren},'%')
+            </if>
+            <if test=" params.jingbanrenTimeStart != '' and params.jingbanrenTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.jingbanren_time) >= UNIX_TIMESTAMP(#{params.jingbanrenTimeStart}) ]]>
+            </if>
+            <if test=" params.jingbanrenTimeEnd != '' and params.jingbanrenTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.jingbanren_time) <= UNIX_TIMESTAMP(#{params.jingbanrenTimeEnd}) ]]>
+            </if>
+
+            <if test=" params.danganBianhao != '' and params.danganBianhao != null and params.danganBianhao != 'null' ">
+                and dangan.dangan_bianhao like CONCAT('%',#{params.danganBianhao},'%')
+            </if>
+            <if test=" params.danganName != '' and params.danganName != null and params.danganName != 'null' ">
+                and dangan.dangan_name like CONCAT('%',#{params.danganName},'%')
+            </if>
+            <if test="params.danganTypes != null">
+                and dangan.dangan_types = #{params.danganTypes}
+            </if>
+
+            <if test=" params.danganContent != '' and params.danganContent != null and params.danganContent != 'null' ">
+                and dangan.dangan_content like CONCAT('%',#{params.danganContent},'%')
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(dangan.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(dangan.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+            <if test=" params.jieyuebuName != '' and params.jieyuebuName != null and params.jieyuebuName != 'null' ">
+                and jieyuebu.jieyuebu_name like CONCAT('%',#{params.jieyuebuName},'%')
+            </if>
+            <if test=" params.jieyuebuPhone != '' and params.jieyuebuPhone != null and params.jieyuebuPhone != 'null' ">
+                and jieyuebu.jieyuebu_phone like CONCAT('%',#{params.jieyuebuPhone},'%')
+            </if>
+            <if test=" params.jieyuebuIdNumber != '' and params.jieyuebuIdNumber != null and params.jieyuebuIdNumber != 'null' ">
+                and jieyuebu.jieyuebu_id_number like CONCAT('%',#{params.jieyuebuIdNumber},'%')
+            </if>
+            <if test=" params.wenshudanganName != '' and params.wenshudanganName != null and params.wenshudanganName != 'null' ">
+                and wenshudangan.wenshudangan_name like CONCAT('%',#{params.wenshudanganName},'%')
+            </if>
+            <if test=" params.wenshudanganPhone != '' and params.wenshudanganPhone != null and params.wenshudanganPhone != 'null' ">
+                and wenshudangan.wenshudangan_phone like CONCAT('%',#{params.wenshudanganPhone},'%')
+            </if>
+            <if test=" params.wenshudanganIdNumber != '' and params.wenshudanganIdNumber != null and params.wenshudanganIdNumber != 'null' ">
+                and wenshudangan.wenshudangan_id_number like CONCAT('%',#{params.wenshudanganIdNumber},'%')
+            </if>
+            <if test=" params.yonghuName != '' and params.yonghuName != null and params.yonghuName != 'null' ">
+                and yonghu.yonghu_name like CONCAT('%',#{params.yonghuName},'%')
+            </if>
+            <if test=" params.yonghuPhone != '' and params.yonghuPhone != null and params.yonghuPhone != 'null' ">
+                and yonghu.yonghu_phone like CONCAT('%',#{params.yonghuPhone},'%')
+            </if>
+            <if test=" params.yonghuIdNumber != '' and params.yonghuIdNumber != null and params.yonghuIdNumber != 'null' ">
+                and yonghu.yonghu_id_number like CONCAT('%',#{params.yonghuIdNumber},'%')
+            </if>
+            <if test=" params.yonghuDanwei != '' and params.yonghuDanwei != null and params.yonghuDanwei != 'null' ">
+                and yonghu.yonghu_danwei like CONCAT('%',#{params.yonghuDanwei},'%')
+            </if>
+            <if test=" params.zhuguanName != '' and params.zhuguanName != null and params.zhuguanName != 'null' ">
+                and zhuguan.zhuguan_name like CONCAT('%',#{params.zhuguanName},'%')
+            </if>
+            <if test=" params.zhuguanPhone != '' and params.zhuguanPhone != null and params.zhuguanPhone != 'null' ">
+                and zhuguan.zhuguan_phone like CONCAT('%',#{params.zhuguanPhone},'%')
+            </if>
+            <if test=" params.zhuguanIdNumber != '' and params.zhuguanIdNumber != null and params.zhuguanIdNumber != 'null' ">
+                and zhuguan.zhuguan_id_number like CONCAT('%',#{params.zhuguanIdNumber},'%')
+            </if>
+            <if test=" params.zhurenName != '' and params.zhurenName != null and params.zhurenName != 'null' ">
+                and zhuren.zhuren_name like CONCAT('%',#{params.zhurenName},'%')
+            </if>
+            <if test=" params.zhurenPhone != '' and params.zhurenPhone != null and params.zhurenPhone != 'null' ">
+                and zhuren.zhuren_phone like CONCAT('%',#{params.zhurenPhone},'%')
+            </if>
+            <if test=" params.zhurenIdNumber != '' and params.zhurenIdNumber != null and params.zhurenIdNumber != 'null' ">
+                and zhuren.zhuren_id_number like CONCAT('%',#{params.zhurenIdNumber},'%')
+            </if>
+        </where>
+        order by a.${params.orderBy} desc
+    </select>
+
+</mapper>
